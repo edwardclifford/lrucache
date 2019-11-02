@@ -38,9 +38,9 @@ public class CacheTest {
         assertTrue(testValue == "Value for key 0.");
     }
 
-	@Test
-	public void leastRecentlyUsedIsCorrect () {
-		DataProvider<Integer,String> provider = null; // Need to instantiate an actual DataProvider
-		Cache<Integer,String> cache = new LRUCache<Integer,String>(provider, 5);
-	}
+    @Test
+    public void leastRecentlyUsedIsCorrect () {
+        DataProvider<Integer,String> provider = null; // Need to instantiate an actual DataProvider
+        Cache<Integer,String> cache = new LRUCache<Integer,String>(provider, 5);
+    }
 }
