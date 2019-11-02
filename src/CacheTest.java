@@ -11,8 +11,6 @@ public class CacheTest {
      */
     public static class TestDataProvider implements DataProvider<Integer, String> {
 
-        TestDataProvider () {}
-
         public String get (Integer key) {
             switch (key) {
                 case 0:
