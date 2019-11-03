@@ -19,8 +19,6 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * the linked list.
      */
     private class Element<T, U> {
-        // TODO -- implement
-        // Should store T object, and two U keys
         protected U _value;
         protected T _nextKey;
         protected T _lastKey;
@@ -74,15 +72,19 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	/**
      * Resorts the linked list when a key/value pair has been accessed
      */
-    public boolean update (T key) {
+    private boolean update (T key) {
         // TODO -- implement
         return false;
     }
 
     /**
-     * Adds an element to the cache in event of a miss
+     * Adds a key value pair to the cache in event of a miss
+     * @param key is the key attribute of the pair
+     * @param value is the value attribute of the pair
+     * @return true if the operation was successful, false
+     * otherwise
      */
-    public boolean addElement (T key, U value) {
+    private boolean addElement (T key, U value) {
         // TODO -- implement
         // May need helper methods
         // Should create Element (Will be last value in LL)
@@ -106,7 +108,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	 * Returns the number of cache misses since the object's instantiation.
 	 * @return the number of cache misses since the object's instantiation.
 	 */
-	public int getNumMisses () {
+	private int getNumMisses () {
 		return _missCounter;
 	}
 }
