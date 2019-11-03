@@ -50,16 +50,21 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	public U get (T key) {
         Element request = (Element) _cache.get(key);
 
+        //Search the provider
         if (request == null) {
         	U value = (U) _provider.get(key);
-        	addElement(key, value);
         	
-        	if (value == null) {
-        		return null;
-        	}
-        	else return value;
+            //Provider returns null
+        	if (value == null) return null;
+
+            //Add new value to cache
+        	else {
+        	    addElement(key, value);
+                return value;
+            }
         }
 
+        //Value located in cache, update to recently used 
         update(key);
         return (U) request._value;        
 	}
@@ -84,10 +89,13 @@ public class LRUCache<T, U> implements Cache<T, U> {
         // Add element to end of LL
         // Add element to hashmap
     	final Element entry = new Element(value, null, _tail);
+        
+        //Cache is empty
     	if (_head == null) {
     		_head = key;
     		_tail = key;
     	}
+        //Cache is full
     	else if (_cache.size() == _maxCapacity) {
     		
     	}
