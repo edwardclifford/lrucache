@@ -25,7 +25,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
         protected T _nextKey;
         protected T _lastKey;
 
-        Element (U value, T key, T nextKey, T lastKey) {
+        Element (U value, T nextKey, T lastKey) {
             _value = value;
             _nextKey = nextKey;
             _lastKey = lastKey;
@@ -51,8 +51,9 @@ public class LRUCache<T, U> implements Cache<T, U> {
         Element request = (Element) _cache.get(key);
 
         if (request == null) {
-        	U value = getFromProvider(_provider, key);
-        	add(key, value);
+        	U value = (U) _provider.get(key);
+        	addElement(key, value);
+        	
         	if (value == null) {
         		return null;
         	}
@@ -63,16 +64,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
         return (U) request._value;        
 	}
 
-	/**
-	 * Get the value from the DataProvider 
-	 * @param _provider2 is a the DataProvider
-	 * @param key is the key used to index the value
-	 * @return the value associated with the key from the DataProvider
-	 */
-	private U getFromProvider(DataProvider _provider2, T key) {
-		//TODO  
-		return null;
-	}
+
 
 	/**
      * Resorts the linked list when a key/value pair has been accessed
@@ -85,12 +77,20 @@ public class LRUCache<T, U> implements Cache<T, U> {
     /**
      * Adds an element to the cache in event of a miss
      */
-    public boolean add (T key, U value) {
+    public boolean addElement (T key, U value) {
         // TODO -- implement
         // May need helper methods
         // Should create Element (Will be last value in LL)
         // Add element to end of LL
         // Add element to hashmap
+    	final Element entry = new Element(value, null, _tail);
+    	if (_head == null) {
+    		_head = key;
+    		_tail = key;
+    	}
+    	else if (_cache.size() == _maxCapacity) {
+    		
+    	}
         return false;
     }
 
