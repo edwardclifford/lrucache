@@ -11,7 +11,7 @@ public class CacheTest {
      */
     public static class TestDataProvider implements DataProvider<Integer, String> {
 
-        public static boolean referenced = false;
+        private boolean _referenced = false;
 
         /**
          * Returns a string for a given integer key
@@ -19,7 +19,7 @@ public class CacheTest {
          * @return a string for the value or null if no value was found
          */
         public String get (Integer key) {
-            referenced = true;
+            _referenced = true;
             switch (key) {
                 case 0:
                     return "Value for key 0.";
@@ -36,11 +36,18 @@ public class CacheTest {
         }
 
         /**
+         * Allows the referenced flag to be reset
+         */
+        public void resetReferenced () {
+            _referenced = false;
+        }
+
+        /**
          * Checks if the TestDataProvider was used by the cache.
          * @return true if referenced, false otherwise.
          */
         public boolean wasReferenced () {
-            return referenced;
+            return _referenced;
         }
     }
 
