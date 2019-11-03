@@ -48,6 +48,11 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	 * @return the value associated with the key
 	 */
 	public U get (T key) {
+        U request = _cache.get(key);
+
+        if (request != null) {
+         
+        }
 		return null;  // TODO -- implement!
 	}
 
