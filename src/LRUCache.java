@@ -18,13 +18,11 @@ public class LRUCache<T, U> implements Cache<T, U> {
         // TODO -- implement
         // Should store T object, and two U keys
         private U _value;
-        private T _key;
         private T _nextKey;
         private T _lastKey;
 
         Element (U value, T key, T nextKey, T lastKey) {
             _value = value;
-            _key = key;
             _nextKey = nextKey;
             _lastKey = lastKey;
         }
