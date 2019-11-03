@@ -28,7 +28,6 @@ public class LRUCache<T, U> implements Cache<T, U> {
             _nextKey = nextKey;
             _lastKey = lastKey;
         }
-        
     }
 
 	/**
