@@ -37,7 +37,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	 * @param capacity the exact number of (key,value) pairs to store in the cache
 	 */
 	public LRUCache (DataProvider<T, U> provider, int capacity) {
-        _cache = HashMap();
+        _cache = new HashMap();
         _provider = provider;    
         _maxCapacity = capacity;
 	}
@@ -48,7 +48,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	 * @return the value associated with the key
 	 */
 	public U get (T key) {
-        U request = _cache.get(key);
+        Element request = _cache.get(key);
 
         if (request != null) {
          
