@@ -50,28 +50,36 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	public U get (T key) {
         Element request = (Element) _cache.get(key);
 
-        if (request != null) {
-         
+        if (request == null) {
+        	U value = getFromProvider(_provider, key);
+        	add(key, value);
+        	if (value == null) {
+        		return null;
+        	}
+        	else return value;
         }
-		return null;  // TODO -- implement!
+
+        update(key);
+        return (U) request._value;        
 	}
 
+	/**
+	 * Get the value from the DataProvider 
+	 * @param _provider2 is a the DataProvider
+	 * @param key is the key used to index the value
+	 * @return the value associated with the key from the DataProvider
+	 */
+	private U getFromProvider(DataProvider _provider2, T key) {
+		//TODO  
+		return null;
+	}
 
-    /**
+	/**
      * Resorts the linked list when a key/value pair has been accessed
      */
     public boolean update (T key) {
         // TODO -- implement
         return false;
-    }
-
-    /**
-     * Accesses the stored value at the key
-     */
-    public Element access (T key) {
-        // TODO -- implement
-        // Should return the entire element (U object, T nextElement, T lastElement)
-        return null;
     }
 
     /**
