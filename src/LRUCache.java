@@ -9,6 +9,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
     public T _tail;
 
     public int _missCounter = 0;
+
     /**
      * Implements an Element, which stores a value and keys to the previous and next Elements in
      * the linked list.
@@ -16,6 +17,18 @@ public class LRUCache<T, U> implements Cache<T, U> {
     public class Element<T, U> {
         // TODO -- implement
         // Should store T object, and two U keys
+        private U _value;
+        private T _key;
+        private T _nextKey;
+        private T _lastKey;
+
+        Element (U value, T key, T nextKey, T lastKey) {
+            _value = value;
+            _key = key;
+            _nextKey = nextKey;
+            _lastKey = lastKey;
+        }
+        
     }
 
 	/**
@@ -39,6 +52,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
      */
     public boolean update (T key) {
         // TODO -- implement
+        return false;
     }
 
     /**
@@ -47,14 +61,19 @@ public class LRUCache<T, U> implements Cache<T, U> {
     public Element access (T key) {
         // TODO -- implement
         // Should return the entire element (U object, T nextElement, T lastElement)
+        return null;
     }
 
+    /**
+     * Adds an element to the cache in event of a miss
+     */
     public boolean add (T key, U value) {
         // TODO -- implement
         // May need helper methods
         // Should create Element (Will be last value in LL)
         // Add element to end of LL
         // Add element to hashmap
+        return false;
     }
 
 	/**
