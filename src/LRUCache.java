@@ -5,21 +5,25 @@ import java.util.HashMap;
  * eviction policy.
  */
 public class LRUCache<T, U> implements Cache<T, U> {
-    public T _head;
-    public T _tail;
+    private HashMap _cache;
+    private DataProvider _provider;
 
-    public int _missCounter = 0;
+    private T _head;
+    private T _tail;
+
+    private int _maxCapacity;
+    private int _missCounter = 0;
 
     /**
      * Implements an Element, which stores a value and keys to the previous and next Elements in
      * the linked list.
      */
-    public class Element<T, U> {
+    private class Element<T, U> {
         // TODO -- implement
         // Should store T object, and two U keys
-        private U _value;
-        private T _nextKey;
-        private T _lastKey;
+        protected U _value;
+        protected T _nextKey;
+        protected T _lastKey;
 
         Element (U value, T key, T nextKey, T lastKey) {
             _value = value;
@@ -33,6 +37,9 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	 * @param capacity the exact number of (key,value) pairs to store in the cache
 	 */
 	public LRUCache (DataProvider<T, U> provider, int capacity) {
+        _cache = HashMap();
+        _provider = provider;    
+        _maxCapacity = capacity;
 	}
 
 	/**
@@ -43,6 +50,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	public U get (T key) {
 		return null;  // TODO -- implement!
 	}
+
 
     /**
      * Resorts the linked list when a key/value pair has been accessed
