@@ -84,7 +84,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * @return true if the operation was successful, false
      * otherwise
      */
-    private boolean addElement (T key, U value) {
+    private void addElement (T key, U value) {
         // TODO -- implement
         // May need helper methods
         // Should create Element (Will be last value in LL)
@@ -92,6 +92,8 @@ public class LRUCache<T, U> implements Cache<T, U> {
         // Add element to hashmap
     	final Element<T, U> entry = new Element<T, U>(value, null, _tail);
         
+        _cache.add(key, entry);
+
         //Cache is empty
     	if (_head == null) {
     		_head = key;
@@ -99,9 +101,17 @@ public class LRUCache<T, U> implements Cache<T, U> {
     	}
         //Cache is full
     	else if (_cache.size() == _maxCapacity) {
-    		
+            final T tempKey = _head;
+            _head = _cache.get(_head)._nextKey;
+            _cache.remove(tempKey);
+
+            _cache.get(_tail)._nextKey = key;
+            _tail = key;
     	}
-        return false;
+        else {
+            _cache.get(_tail)._nextKey = key;
+            _tail = key;
+        }
     }
 
 	/**
