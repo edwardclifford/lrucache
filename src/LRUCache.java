@@ -108,7 +108,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	 * Returns the number of cache misses since the object's instantiation.
 	 * @return the number of cache misses since the object's instantiation.
 	 */
-	private int getNumMisses () {
+	public int getNumMisses () {
 		return _missCounter;
 	}
 }
