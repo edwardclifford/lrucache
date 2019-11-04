@@ -62,6 +62,14 @@ public class CacheTest {
     }
 
     @Test
+    public void canInsertKeyValueIntoCache () {
+        DataProvider<Integer, String> provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 5);
+        cache.add(1, "Hello");
+        cache.add(2, "Meow");
+        assertEqual(cache._cache.get(1) = "Hello");
+    }        
+    @Test
     public void leastRecentlyUsedIsCorrect () {
         DataProvider<Integer,String> provider = null; // Need to instantiate an actual DataProvider
         Cache<Integer,String> cache = new LRUCache<Integer,String>(provider, 5);
