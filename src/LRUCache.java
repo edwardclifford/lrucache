@@ -5,8 +5,8 @@ import java.util.HashMap;
  * eviction policy.
  */
 public class LRUCache<T, U> implements Cache<T, U> {
-    private HashMap _cache;
-    private DataProvider _provider;
+    private HashMap<T, Element<T, U>> _cache;
+    private DataProvider<T, U> _provider;
 
     private T _head;
     private T _tail;
@@ -35,7 +35,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	 * @param capacity the exact number of (key,value) pairs to store in the cache
 	 */
 	public LRUCache (DataProvider<T, U> provider, int capacity) {
-        _cache = new HashMap();
+        _cache = new HashMap<T, Element<T, U>>();
         _provider = provider;    
         _maxCapacity = capacity;
 	}
@@ -46,7 +46,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	 * @return the value associated with the key
 	 */
 	public U get (T key) {
-        Element request = (Element) _cache.get(key);
+        final Element<T, U> request = (Element<T, U>) _cache.get(key);
 
         //Search the provider
         if (request == null) {
@@ -90,7 +90,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
         // Should create Element (Will be last value in LL)
         // Add element to end of LL
         // Add element to hashmap
-    	final Element entry = new Element(value, null, _tail);
+    	final Element<T, U> entry = new Element<T, U>(value, null, _tail);
         
         //Cache is empty
     	if (_head == null) {
