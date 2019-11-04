@@ -39,7 +39,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
         _provider = provider;    
         _maxCapacity = capacity;
 	}
-
+    
 	/**
 	 * Returns the value associated with the specified key.
 	 * @param key the key
@@ -66,8 +66,6 @@ public class LRUCache<T, U> implements Cache<T, U> {
         update(key);
         return (U) request._value;        
 	}
-
-
 
 	/**
      * Resorts the linked list when a key/value pair has been accessed
