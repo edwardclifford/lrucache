@@ -90,7 +90,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
         // Add element to hashmap
     	final Element<T, U> entry = new Element<T, U>(value, null, _tail);
         
-        _cache.add(key, entry);
+        _cache.put(key, entry);
 
         //Cache is empty
     	if (_head == null) {
