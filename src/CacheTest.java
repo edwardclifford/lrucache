@@ -64,7 +64,7 @@ public class CacheTest {
     }
     
     /**
-     * Confirms that the TestDataProvider class returns what is expected.
+     * Tests a cache of one but calling get zero twice
      */
     @Test
     public void testCacheSizeOne() {
@@ -84,17 +84,136 @@ public class CacheTest {
     @Test 
     public void testMax() {
     	TestDataProvider provider = new TestDataProvider();
-        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 1);
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 3);
         cache.get(0);
         cache.get(1);
         cache.get(2);
         cache.get(3);
-        cache.get(4);
-        cache.get(0);
+        
+        provider.resetReferenced();
         String fromCache = cache.get(0);
-        assertTrue(fromCache == "Value for key 0.");       
+        assertTrue(provider.wasReferenced());
+        
+        provider.resetReferenced();
+        fromCache = cache.get(3);
+        assertFalse(provider.wasReferenced());
+        assertTrue(fromCache == "Value for key 3.");       
         
     }
+    
+    /**
+     * Tests that the number of misses is correct
+     */
+    @Test 
+    public void testNumberOfMisses() {
+    	TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 4); 
+        
+        cache.get(0);
+        cache.get(1);
+        cache.get(2);
+        
+        //initial check before repeat
+        int numMisses = cache.getNumMisses();
+        assertTrue(numMisses == 3);
+        
+        //asks for values already in cache
+        cache.get(1);
+        cache.get(2);
+        int numMisses2 = cache.getNumMisses();
+        assertTrue(numMisses2 == 3);
+        
+        //asks for another value not in cache
+        cache.get(3);
+        int numMisses3 = cache.getNumMisses();
+        assertTrue(numMisses3 == 4);      
+    }
+    
+    /**
+     * Tests if you call a value already in cache it should not get from provider
+     */
+    @Test 
+    public void testReferenceTail() {
+    	TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 3);
+        cache.get(0);
+        assertTrue(provider.wasReferenced());
+        provider.resetReferenced();
+        
+        cache.get(1);
+        assertTrue(provider.wasReferenced());
+        provider.resetReferenced();
+        
+        cache.get(2);
+        assertTrue(provider.wasReferenced());
+        provider.resetReferenced();
+        
+        //tests that 1 is already in the cache
+        cache.get(1);
+        assertFalse(provider.wasReferenced());
+        
+    }
+    
+    /**
+     * Tests if you call a value already in cache that is the first element added
+     */
+    @Test 
+    public void testReferenceHead() {
+    	TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 3);
+        cache.get(0);      
+        cache.get(1);
+        cache.get(2);
+                
+        provider.resetReferenced();
+        String fromCache = cache.get(0);
+        assertFalse(provider.wasReferenced());
+        assertTrue(fromCache == "Value for key 0.");     
+             
+        
+    }
+    
+    /**
+     * Tests trying to reference an element in the middle of the cache
+     */
+    @Test 
+    public void testReferenceMiddle() {
+    	TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 4);
+        cache.get(0);
+        cache.get(1);
+        cache.get(2);
+        cache.get(3);
+        
+        provider.resetReferenced();
+        String fromCache = cache.get(2);
+        assertFalse(provider.wasReferenced());
+        assertTrue(fromCache == "Value for key 2.");       
+        
+    }
+    
+    
+    /**
+     * Tests trying to reference an element in the end of the cache
+     */
+    @Test 
+    public void testReferenceEnd() {
+    	TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 4);
+        cache.get(0);
+        cache.get(1);
+        cache.get(2);
+        cache.get(3);
+        
+        provider.resetReferenced();
+        String fromCache = cache.get(3);
+        assertFalse(provider.wasReferenced());
+        assertTrue(fromCache == "Value for key 3.");       
+        
+    }
+    
+    
+    
 
     @Test
     public void leastRecentlyUsedIsCorrect () {
