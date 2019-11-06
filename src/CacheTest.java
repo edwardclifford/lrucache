@@ -60,6 +60,21 @@ public class CacheTest {
         String testValue = provider.get(0);
         assertTrue(testValue == "Value for key 0.");
     }
+    
+    /**
+     * Confirms that the TestDataProvider class returns what is expected.
+     */
+    @Test
+    public void testCacheSizeOne() {
+        TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 1);
+        cache.get(0);
+        assertTrue(provider.wasReferenced());
+        provider.resetReferenced();
+        String fromCache = cache.get(0);
+        assertFalse(provider.wasReferenced());
+        assertTrue(fromCache == "Value for key 0.");
+    }
 
     @Test
     public void leastRecentlyUsedIsCorrect () {

@@ -77,7 +77,8 @@ public class LRUCache<T, U> implements Cache<T, U> {
 		
     	//checks if the key is the _head
     	if (key == _head) {
-
+    		if (currentElement._nextKey == null) return;
+    		
     		_head = _cache.get(_head)._nextKey;    //updating head to the next element
     		_cache.get(_head)._lastKey = null;     //updating the new head point back to null
     		currentElement._lastKey = _tail;	   //updating new tail
