@@ -95,14 +95,12 @@ public class LRUCache<T, U> implements Cache<T, U> {
     	}
     	//any other case
     	else {
-    		if (currentElement._nextKey == null) System.out.println("next = NULL");
-    		if (currentElement._lastKey == null)  System.out.println("Last = NULL");
-    		
+
     		//Remove the element from the linked list, set neighbor elements to point to each other
-    		T temp1 = currentElement._lastKey;
-    		//System.out.println("temp1  " + _cache.get(temp1)._nextKey);
-    		_cache.get(temp1)._nextKey = currentElement._nextKey;
-    		//System.out.println("currentEl  " + _cache.get(currentElement._nextKey)._lastKey);
+
+
+    		_cache.get(currentElement._lastKey)._nextKey = currentElement._nextKey;
+
     		_cache.get(currentElement._nextKey)._lastKey = currentElement._lastKey;
     		
     		//Move the element to the end of the linked list
@@ -152,7 +150,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
             _cache.get(_head)._lastKey = null;
             //System.out.println("Trying to remove LUR entry.");
             _cache.remove(tempKey);
-
+            
             _cache.get(_tail)._nextKey = key;
             _tail = key;
     	}
