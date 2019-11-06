@@ -19,7 +19,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * the linked list.
      */
     private class Element<T, U> {
-        protected U _value;
+        protected U _value;   			//might mess up auto grader maybe just change to private
         protected T _nextKey;
         protected T _lastKey;
 
@@ -77,7 +77,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 		Element<T, U> currentElement = _cache.get(key);
 		
     	//checks if the key is the _head
-    	if (key == _head) {
+    	if (key.equals(_head)) {
     		if (currentElement._nextKey == null) return;
     		
     		_head = _cache.get(_head)._nextKey;    //updating head to the next element
@@ -90,13 +90,19 @@ public class LRUCache<T, U> implements Cache<T, U> {
     		
     	}
     	//if key is the tail
-    	else if (key == _tail) {
+    	else if (key.equals(_tail)) {
     		return;
     	}
     	//any other case
     	else {
+    		if (currentElement._nextKey == null) System.out.println("next = NULL");
+    		if (currentElement._lastKey == null)  System.out.println("Last = NULL");
+    		
     		//Remove the element from the linked list, set neighbor elements to point to each other
-    		_cache.get(currentElement._lastKey)._nextKey = currentElement._nextKey;
+    		T temp1 = currentElement._lastKey;
+    		//System.out.println("temp1  " + _cache.get(temp1)._nextKey);
+    		_cache.get(temp1)._nextKey = currentElement._nextKey;
+    		//System.out.println("currentEl  " + _cache.get(currentElement._nextKey)._lastKey);
     		_cache.get(currentElement._nextKey)._lastKey = currentElement._lastKey;
     		
     		//Move the element to the end of the linked list
@@ -134,17 +140,17 @@ public class LRUCache<T, U> implements Cache<T, U> {
         System.out.println(_cache.size());
         //Cache is empty
     	if (_head == null) {
-            System.out.println("Cache is empty");
+            //System.out.println("Cache is empty");
     		_head = key;
     		_tail = key;
     	}
         //Cache is full
     	else if (_cache.size() - 1 == _maxCapacity) {
-            System.out.println("Cache is full");
+            //System.out.println("Cache is full");
             final T tempKey = _head;
             _head = _cache.get(_head)._nextKey;
             _cache.get(_head)._lastKey = null;
-            System.out.println("Trying to remove LUR entry.");
+            //System.out.println("Trying to remove LUR entry.");
             _cache.remove(tempKey);
 
             _cache.get(_tail)._nextKey = key;
