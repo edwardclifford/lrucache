@@ -285,19 +285,19 @@ public class CacheTest {
             provider._wasReferenced = false;
             cache.get(history[i]);
             int lowestIndex = getArrayIndex(history, history[i]);
-            System.out.println(i);
-            System.out.println(history[i]);
-            System.out.println(lowestIndex);
+            //System.out.println(i);
+            //System.out.println(history[i]);
+            //System.out.println(lowestIndex);
             if (lowestIndex == -1) {
-                System.out.println("Case 0");
+                //System.out.println("Case 0");
                 assertTrue(provider._wasReferenced);
             }
             else if (lowestIndex < size) {
-                System.out.println("Case 1");
+                //System.out.println("Case 1");
                 assertFalse(provider._wasReferenced); 
             }
             else {
-                System.out.println("Case 2");
+                //System.out.println("Case 2");
                 assertTrue(provider._wasReferenced);
             }
         }
