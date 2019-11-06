@@ -19,7 +19,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * the linked list.
      */
     private class Element<T, U> {
-        protected U _value;
+        protected U _value;   			//might mess up auto grader maybe just change to private
         protected T _nextKey;
         protected T _lastKey;
 
@@ -94,8 +94,10 @@ public class LRUCache<T, U> implements Cache<T, U> {
     	}
     	//any other case
     	else {
+
     		//Remove the element from the linked list, set neighbor elements to point to each other
     		_cache.get(currentElement._lastKey)._nextKey = currentElement._nextKey;
+
     		_cache.get(currentElement._nextKey)._lastKey = currentElement._lastKey;
     		
     		//Move the element to the end of the linked list

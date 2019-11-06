@@ -234,21 +234,10 @@ public class CacheTest {
         DataProvider<Integer,String> provider = null; // Need to instantiate an actual DataProvider
         Cache<Integer,String> cache = new LRUCache<Integer,String>(provider, 5);
     }
-    
-    /**
-     * Tests a cache with size 100 and a namespace 200
-     */
+
     @Test
-    public void testRandom200 () {
-        randomHelper(100, 2);
-    }
-    
-    /**
-     * Tests a cache with size 100 and a namespace 1000
-     */
-    @Test
-    public void testRandom1000 () {
-        randomHelper(100, 10);
+    public void testRandom () {
+        randomHelper(100);
     }
     
     /**
@@ -258,11 +247,6 @@ public class CacheTest {
         public int _timesReferenced = 0;
         public boolean _wasReferenced = false;
 
-        /**
-         * Returns the passed key as a string, will also record how many times it was referenced
-         * @param key the value to be converted and returned
-         * @return a string representation of the key
-         */
         public String get (Integer key) {
             _timesReferenced ++;
             _wasReferenced = true;
@@ -270,47 +254,55 @@ public class CacheTest {
         } 
     } 
     
-    /**
-     * Helps test random size caches with a limited namespace
-     * @param size the size of the cache
-     * @param nameSpaceScalar how many times larger the namespace should be than the cache
-     */ 
-    public void randomHelper (int size, int nameSpaceScalar) {
+    public void updateCache (ArrayList cache, Integer key) {
+        cache.remove(cache.indexOf(key));
+        cache.add(0, key);
+        return; 
+    }
+    public void addToCache (ArrayList cache, Integer keyr {
+        cache.add(0, key);
+        if (cache.size() > size) {
+            cache.remove(size - 1);
+        }
+    } 
+    public void randomHelper (int size) {
         // Create provider and cache
         EchoDataProvider provider = new EchoDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, size);
-        final int nameSpace = size * nameSpaceScalar;
-
-        //Create a slow cache to track what should be in the LRU cache
+        int nameSpaceScalar = 2;
+        int nameSpace = size * nameSpaceScalar;
+        // Start a loop to insert n pairs and track progress
         ArrayList<Integer> fakeCache = new ArrayList<Integer>();
         Random rand = new Random();
 
-        //Run an ammount of values through both caches
         for (int i = 0; i <= nameSpace; i++) {
             int key = rand.nextInt(nameSpace);
             cache.get(key);
-            if (fakeCache.contains(key)) {
-                fakeCache.remove(fakeCache.indexOf(key));
+            if (!(fakeCache.contains(key))) {
                 fakeCache.add(0, key);
+                if (fakeCache.size() >  size) {
+                    fakeCache.remove(size - 1); 
+                }
             }
             else {
+                fakeCache.remove(fakeCache.indexOf(key));
                 fakeCache.add(0, key);
-                if (fakeCache.size() > size) {
-                    fakeCache.remove(size - 1);
-                }
             } 
         }
-        // Read from cache and verify that provider is only accessed when needed
+        // Read from cache
         for (int i = 0; i <= nameSpace; i++) {
+            System.out.println(i);
             int key = rand.nextInt(nameSpace); 
             provider._wasReferenced = false;
             cache.get(key);
             if (fakeCache.contains(key)) {
+                System.out.println("Should be in cache");
                 assertFalse(provider._wasReferenced);
                 fakeCache.remove(fakeCache.indexOf(key));
                 fakeCache.add(0, key);
             }
             else {
+                System.out.println("Should not be in cache");
                 assertTrue(provider._wasReferenced);
                 fakeCache.add(0, key);
                 if (fakeCache.size() > size) {
@@ -318,5 +310,6 @@ public class CacheTest {
                 }
             }
         }
+        return;
     }
 }
