@@ -220,16 +220,10 @@ public class CacheTest {
     	TestDataProvider provider = new TestDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 4);
         cache.get(0);
-        String fromCache = cache.get(3);
-        assertTrue(provider.wasReferenced());
-        
         cache.get(1);
-        provider.resetReferenced();
-        fromCache = cache.get(3);
-        assertTrue(provider.wasReferenced());
-        
-        cache.get(7);   //not in DataProvider
-        assertTrue(provider.wasReferenced());
+
+        //not in DataProvider
+        assertNull(cache.get(7));
         
     }
     
