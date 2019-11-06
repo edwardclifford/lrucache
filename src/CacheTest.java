@@ -212,6 +212,27 @@ public class CacheTest {
         
     }
     
+    /**
+     * Tests to try and add an element that is not in the Cache or the DataProvider
+     */
+    @Test 
+    public void testNoReference() {
+    	TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 4);
+        cache.get(0);
+        String fromCache = cache.get(3);
+        assertTrue(provider.wasReferenced());
+        
+        cache.get(1);
+        provider.resetReferenced();
+        fromCache = cache.get(3);
+        assertTrue(provider.wasReferenced());
+        
+        cache.get(7);   //not in DataProvider
+        assertTrue(provider.wasReferenced());
+        
+    }
+    
     
     
 

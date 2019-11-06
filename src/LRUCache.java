@@ -135,7 +135,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
     		_tail = key;
     	}
         //Cache is full
-    	else if (_cache.size() == _maxCapacity) {
+    	else if (_cache.size() - 1 == _maxCapacity) {
             final T tempKey = _head;
             _head = _cache.get(_head)._nextKey;
             _cache.get(_head)._lastKey = null;
