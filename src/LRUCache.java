@@ -77,7 +77,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
 		Element<T, U> currentElement = _cache.get(key);
 		
     	//checks if the key is the _head
-    	if (key == _head) {
+    	if (key.equals(_head)) {
     		if (currentElement._nextKey == null) return;
     		
     		_head = _cache.get(_head)._nextKey;    //updating head to the next element
@@ -90,12 +90,25 @@ public class LRUCache<T, U> implements Cache<T, U> {
     		
     	}
     	//if key is the tail
-    	else if (key == _tail) {
+    	else if (key.equals(_tail)) {
     		return;
     	}
     	//any other case
     	else {
     		//Remove the element from the linked list, set neighbor elements to point to each other
+            if (currentElement._lastKey == null || currentElement._nextKey == null) {
+                System.out.println("The error happened"); 
+                System.out.print("Value: ");
+                System.out.println(currentElement._value);
+                System.out.print("Next key: ");
+                System.out.println(currentElement._nextKey);
+                System.out.print("Last key: ");
+                System.out.println(currentElement._lastKey);
+                System.out.print("Head: ");
+                System.out.println(_head);
+                System.out.print("Tail: ");
+                System.out.println(_tail);
+            }
     		_cache.get(currentElement._lastKey)._nextKey = currentElement._nextKey;
     		_cache.get(currentElement._nextKey)._lastKey = currentElement._lastKey;
     		
@@ -146,7 +159,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
             _cache.get(_head)._lastKey = null;
             System.out.println("Trying to remove LUR entry.");
             _cache.remove(tempKey);
-
+            
             _cache.get(_tail)._nextKey = key;
             _tail = key;
     	}

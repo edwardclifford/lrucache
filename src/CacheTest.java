@@ -302,7 +302,7 @@ public class CacheTest {
                 System.out.println("Case 0");
                 assertTrue(provider._wasReferenced);
             }
-            else if (lowestIndex < 1000) {
+            else if (lowestIndex <= size) {
                 System.out.println("Case 1");
                 assertFalse(provider._wasReferenced); 
             }
@@ -310,7 +310,7 @@ public class CacheTest {
                 System.out.println("Case 2");
                 assertTrue(provider._wasReferenced);
             }
-            history = shiftArray(history, i);
+            history = shiftArray(history, lowestIndex);
         }
         return;
     }
