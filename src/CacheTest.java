@@ -227,9 +227,6 @@ public class CacheTest {
         assertNull(cache.get(7));
         
     }
-    
-    
-    
 
     @Test
     public void leastRecentlyUsedIsCorrect () {
@@ -252,6 +249,7 @@ public class CacheTest {
         public String get (Integer key) {
             _timesReferenced ++;
             _wasReferenced = true;
+            System.out.println("Provider referenced");
             return Integer.toString(key); 
         } 
     } 
@@ -268,6 +266,18 @@ public class CacheTest {
         return k;
     }
 
+    public Integer[] shiftArray(Integer[] arr, int index) {
+        Integer[] tempArr = new Integer[arr.length];
+        for (int i = 0; i < index; i++) {
+            tempArr[i + 1] = arr[i];
+        }
+        tempArr[0] = arr[index]; 
+        for (int i = index + 1; i < arr.length; i++) {
+            tempArr[i] = arr[i]; 
+        }
+        return tempArr;
+    }
+
     public void randomHelper (int size) {
         // Create provider and cache
         EchoDataProvider provider = new EchoDataProvider();
@@ -276,30 +286,31 @@ public class CacheTest {
         Integer[] history = new Integer[size * 10];
         Random rand = new Random();
         for (int i = size * 10 - 1; i >= 0; i--) {
-            int key = i;
+            int key = rand.nextInt(size * 10);
             cache.get(key);
             history[i] = key;
         }
         // Read from cache
         for (int i = 0; i < size * 10; i++) {
             provider._wasReferenced = false;
-            cache.get(history[i]);
+            System.out.println(cache.get(history[i]));
             int lowestIndex = getArrayIndex(history, history[i]);
-            //System.out.println(i);
-            //System.out.println(history[i]);
-            //System.out.println(lowestIndex);
+            System.out.println(i);
+            System.out.println(history[i]);
+            System.out.println(lowestIndex);
             if (lowestIndex == -1) {
-                //System.out.println("Case 0");
+                System.out.println("Case 0");
                 assertTrue(provider._wasReferenced);
             }
-            else if (lowestIndex < size) {
-                //System.out.println("Case 1");
+            else if (lowestIndex < 1000) {
+                System.out.println("Case 1");
                 assertFalse(provider._wasReferenced); 
             }
             else {
-                //System.out.println("Case 2");
+                System.out.println("Case 2");
                 assertTrue(provider._wasReferenced);
             }
+            history = shiftArray(history, i);
         }
         return;
     }

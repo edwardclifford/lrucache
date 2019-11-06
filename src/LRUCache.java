@@ -64,6 +64,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
         }
 
         //Value located in cache, update to recently used 
+        System.out.println("Found element in cache.");
         update(key);
         return (U) request._value;        
 	}
@@ -129,16 +130,21 @@ public class LRUCache<T, U> implements Cache<T, U> {
         
         _cache.put(key, entry);
 
+        System.out.print("Cache size: ");
+        System.out.println(_cache.size());
         //Cache is empty
     	if (_head == null) {
+            System.out.println("Cache is empty");
     		_head = key;
     		_tail = key;
     	}
         //Cache is full
     	else if (_cache.size() - 1 == _maxCapacity) {
+            System.out.println("Cache is full");
             final T tempKey = _head;
             _head = _cache.get(_head)._nextKey;
             _cache.get(_head)._lastKey = null;
+            System.out.println("Trying to remove LUR entry.");
             _cache.remove(tempKey);
 
             _cache.get(_tail)._nextKey = key;
