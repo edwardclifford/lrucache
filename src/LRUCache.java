@@ -50,8 +50,9 @@ public class LRUCache<T, U> implements Cache<T, U> {
 
         //Search the provider
         if (request == null) {
+        	_missCounter ++;
         	U value = (U) _provider.get(key);
-        	
+
             //Provider returns null
         	if (value == null) return null;
 
@@ -68,11 +69,46 @@ public class LRUCache<T, U> implements Cache<T, U> {
 	}
 
 	/**
-     * Resorts the linked list when a key/value pair has been accessed
+     * Re-sorts the linked list when a key/value pair has been accessed
+     * @param key the key used to access the object
      */
-    private boolean update (T key) {
-        // TODO -- implement
-        return false;
+    private void update (T key) {
+		Element<T, U> currentElement = _cache.get(key);
+		
+    	//checks if the key is the _head
+    	if (key == _head) {
+
+    		_head = _cache.get(_head)._nextKey;    //updating head to the next element
+    		_cache.get(_head)._lastKey = null;     //updating the new head point back to null
+    		currentElement._lastKey = _tail;	   //updating new tail
+    		currentElement._nextKey = null; 	   //updating new tail to point to null
+    		_cache.get(_tail)._nextKey = key; 	   //updating old tail
+    		_tail = key;						   //setting new tail
+    		return;
+    		
+    	}
+    	//if key is the tail
+    	else if (key == _tail) {
+    		return;
+    	}
+    	//any other case
+    	else {
+    		//Remove the element from the linked list, set neighbor elements to point to each other
+    		_cache.get(currentElement._lastKey)._nextKey = currentElement._nextKey;
+    		_cache.get(currentElement._nextKey)._lastKey = currentElement._lastKey;
+    		
+    		//Move the element to the end of the linked list
+    		_cache.get(_tail)._nextKey = key;
+    		
+    		//Update the element's references
+    		currentElement._nextKey = null;
+    		currentElement._lastKey = _tail;
+    		
+    		//Update the tail pointer
+    		_tail = key;
+    		return;
+    	}
+        
     }
 
     /**
@@ -101,6 +137,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
     	else if (_cache.size() == _maxCapacity) {
             final T tempKey = _head;
             _head = _cache.get(_head)._nextKey;
+            _cache.get(_head)._lastKey = null;
             _cache.remove(tempKey);
 
             _cache.get(_tail)._nextKey = key;
