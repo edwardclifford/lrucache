@@ -12,6 +12,7 @@ public class CacheTest {
     public static class TestDataProvider implements DataProvider<Integer, String> {
 
         private boolean _referenced = false;
+        public int timesReferenced = 0;
 
         /**
          * Returns a string for a given integer key
@@ -19,6 +20,7 @@ public class CacheTest {
          * @return a string for the value or null if no value was found
          */
         public String get (Integer key) {
+            timesReferenced ++;
             _referenced = true;
             switch (key) {
                 case 0:
