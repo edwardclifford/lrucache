@@ -64,7 +64,6 @@ public class LRUCache<T, U> implements Cache<T, U> {
         }
 
         //Value located in cache, update to recently used 
-        System.out.println("Found element in cache.");
         update(key);
         return (U) request._value;        
 	}
@@ -96,19 +95,6 @@ public class LRUCache<T, U> implements Cache<T, U> {
     	//any other case
     	else {
     		//Remove the element from the linked list, set neighbor elements to point to each other
-            if (currentElement._lastKey == null || currentElement._nextKey == null) {
-                System.out.println("The error happened"); 
-                System.out.print("Value: ");
-                System.out.println(currentElement._value);
-                System.out.print("Next key: ");
-                System.out.println(currentElement._nextKey);
-                System.out.print("Last key: ");
-                System.out.println(currentElement._lastKey);
-                System.out.print("Head: ");
-                System.out.println(_head);
-                System.out.print("Tail: ");
-                System.out.println(_tail);
-            }
     		_cache.get(currentElement._lastKey)._nextKey = currentElement._nextKey;
     		_cache.get(currentElement._nextKey)._lastKey = currentElement._lastKey;
     		
@@ -143,21 +129,16 @@ public class LRUCache<T, U> implements Cache<T, U> {
         
         _cache.put(key, entry);
 
-        System.out.print("Cache size: ");
-        System.out.println(_cache.size());
         //Cache is empty
     	if (_head == null) {
-            System.out.println("Cache is empty");
     		_head = key;
     		_tail = key;
     	}
         //Cache is full
     	else if (_cache.size() - 1 == _maxCapacity) {
-            System.out.println("Cache is full");
             final T tempKey = _head;
             _head = _cache.get(_head)._nextKey;
             _cache.get(_head)._lastKey = null;
-            System.out.println("Trying to remove LUR entry.");
             _cache.remove(tempKey);
             
             _cache.get(_tail)._nextKey = key;
