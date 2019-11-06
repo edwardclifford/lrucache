@@ -19,7 +19,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * the linked list.
      */
     private class Element<T, U> {
-        protected U _value;   			//might mess up auto grader maybe just change to private
+        protected U _value;   			
         protected T _nextKey;
         protected T _lastKey;
 
