@@ -102,18 +102,6 @@ public class CacheTest {
         } 
     } 
 
-    public int getArrayIndex(Integer[] arr, int value) {
-        int k = -1;
-
-        for(int i = 0; i < arr.length; i++){
-            if(arr[i] == value){
-                k = i;
-                break;
-            }
-        }
-        return k;
-    }
-
     public void randomHelper (int size) {
         // Create provider and cache
         EchoDataProvider provider = new EchoDataProvider();
@@ -121,29 +109,20 @@ public class CacheTest {
         // Start a loop to insert n pairs and track progress
         Integer[] history = new Integer[size * 10];
         Random rand = new Random();
-        for (int i = size * 10 - 1; i >= 0; i--) {
-            int key = i;
+        for (int i = 0; i < size * 10; i++) {
+            int key = rand.nextInt(size);             
             cache.get(key);
-            history[i] = key;
+            history[(size * 10) - i - 1] = key;
         }
         // Read from cache
         for (int i = 0; i < size * 10; i++) {
+            int key = rand.nextInt(size);
             provider._wasReferenced = false;
             cache.get(history[i]);
-            int lowestIndex = getArrayIndex(history, history[i]);
-            System.out.println(i);
-            System.out.println(history[i]);
-            System.out.println(lowestIndex);
-            if (lowestIndex == -1) {
-                System.out.println("Case 0");
-                assertTrue(provider._wasReferenced);
-            }
-            else if (lowestIndex < size) {
-                System.out.println("Case 1");
-                assertFalse(provider._wasReferenced); 
+            if (i < size) {
+                assertFalse(provider._wasReferenced);
             }
             else {
-                System.out.println("Case 2");
                 assertTrue(provider._wasReferenced);
             }
         }
