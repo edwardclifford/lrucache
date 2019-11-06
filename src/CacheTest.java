@@ -237,7 +237,7 @@ public class CacheTest {
 
     @Test
     public void testRandom () {
-        randomHelper(100);
+        randomHelper(100, 2);
     }
     
     /**
@@ -254,22 +254,10 @@ public class CacheTest {
         } 
     } 
     
-    public void updateCache (ArrayList cache, Integer key) {
-        cache.remove(cache.indexOf(key));
-        cache.add(0, key);
-        return; 
-    }
-    public void addToCache (ArrayList cache, Integer keyr {
-        cache.add(0, key);
-        if (cache.size() > size) {
-            cache.remove(size - 1);
-        }
-    } 
-    public void randomHelper (int size) {
+    public void randomHelper (int size, int nameSpaceScalar) {
         // Create provider and cache
         EchoDataProvider provider = new EchoDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, size);
-        int nameSpaceScalar = 2;
         int nameSpace = size * nameSpaceScalar;
         // Start a loop to insert n pairs and track progress
         ArrayList<Integer> fakeCache = new ArrayList<Integer>();
@@ -278,38 +266,34 @@ public class CacheTest {
         for (int i = 0; i <= nameSpace; i++) {
             int key = rand.nextInt(nameSpace);
             cache.get(key);
-            if (!(fakeCache.contains(key))) {
-                fakeCache.add(0, key);
-                if (fakeCache.size() >  size) {
-                    fakeCache.remove(size - 1); 
-                }
-            }
-            else {
+            if (fakeCache.contains(key)) {
                 fakeCache.remove(fakeCache.indexOf(key));
                 fakeCache.add(0, key);
+            }
+            else {
+                fakeCache.add(0, key);
+                if (fakeCache.size() > size) {
+                    fakeCache.remove(size - 1);
+                }
             } 
         }
         // Read from cache
         for (int i = 0; i <= nameSpace; i++) {
-            System.out.println(i);
             int key = rand.nextInt(nameSpace); 
             provider._wasReferenced = false;
             cache.get(key);
             if (fakeCache.contains(key)) {
-                System.out.println("Should be in cache");
                 assertFalse(provider._wasReferenced);
                 fakeCache.remove(fakeCache.indexOf(key));
                 fakeCache.add(0, key);
             }
             else {
-                System.out.println("Should not be in cache");
                 assertTrue(provider._wasReferenced);
                 fakeCache.add(0, key);
                 if (fakeCache.size() > size) {
-                    fakeCache.remove(size);
+                    fakeCache.remove(size - 1);
                 }
             }
         }
-        return;
     }
 }
