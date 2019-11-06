@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.Random;
 
 /**
  * Code to test an <tt>LRUCache</tt> implementation.
@@ -234,5 +235,72 @@ public class CacheTest {
     public void leastRecentlyUsedIsCorrect () {
         DataProvider<Integer,String> provider = null; // Need to instantiate an actual DataProvider
         Cache<Integer,String> cache = new LRUCache<Integer,String>(provider, 5);
+    }
+
+    @Test
+    public void testRandom () {
+        randomHelper(100);
+    }
+    
+    /**
+     * Impliments a data provider that returns the string of the key passed
+     */
+    public class EchoDataProvider implements DataProvider<Integer, String> {
+        public int _timesReferenced = 0;
+        public boolean _wasReferenced = false;
+
+        public String get (Integer key) {
+            _timesReferenced ++;
+            _wasReferenced = true;
+            return Integer.toString(key); 
+        } 
+    } 
+
+    public int getArrayIndex(Integer[] arr, int value) {
+        int k = -1;
+
+        for(int i = 0; i < arr.length; i++){
+            if(arr[i] == value){
+                k = i;
+                break;
+            }
+        }
+        return k;
+    }
+
+    public void randomHelper (int size) {
+        // Create provider and cache
+        EchoDataProvider provider = new EchoDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, size);
+        // Start a loop to insert n pairs and track progress
+        Integer[] history = new Integer[size * 10];
+        Random rand = new Random();
+        for (int i = size * 10 - 1; i >= 0; i--) {
+            int key = i;
+            cache.get(key);
+            history[i] = key;
+        }
+        // Read from cache
+        for (int i = 0; i < size * 10; i++) {
+            provider._wasReferenced = false;
+            cache.get(history[i]);
+            int lowestIndex = getArrayIndex(history, history[i]);
+            System.out.println(i);
+            System.out.println(history[i]);
+            System.out.println(lowestIndex);
+            if (lowestIndex == -1) {
+                System.out.println("Case 0");
+                assertTrue(provider._wasReferenced);
+            }
+            else if (lowestIndex < size) {
+                System.out.println("Case 1");
+                assertFalse(provider._wasReferenced); 
+            }
+            else {
+                System.out.println("Case 2");
+                assertTrue(provider._wasReferenced);
+            }
+        }
+        return;
     }
 }
