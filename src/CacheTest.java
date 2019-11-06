@@ -75,6 +75,24 @@ public class CacheTest {
         assertFalse(provider.wasReferenced());
         assertTrue(fromCache == "Value for key 0.");
     }
+    
+    /**
+     * Tests trying to add a new element to cache after the cache is full
+     */
+    @Test 
+    public void testMax() {
+    	TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 1);
+        cache.get(0);
+        cache.get(1);
+        cache.get(2);
+        cache.get(3);
+        cache.get(4);
+        cache.get(0);
+        String fromCache = cache.get(0);
+        assertTrue(fromCache == "Value for key 0.");       
+        
+    }
 
     @Test
     public void leastRecentlyUsedIsCorrect () {
