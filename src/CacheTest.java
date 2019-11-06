@@ -267,11 +267,30 @@ public class CacheTest {
         
     }
 
+    /**
+     * Test a cache with size 100 and getting 200 possible values
+     */
     @Test
-    public void testRandom () {
+    public void testRandom100 () {
+        randomHelper(25, 4);
+    } 
+
+    /**
+     * Test a cache with size 100 and getting 200 possible values
+     */
+    @Test
+    public void testRandom200 () {
         randomHelper(100, 2);
     }
-    
+
+    /**
+     * Test a cache with size 100 and getting 1000 possible values
+     */
+    @Test
+    public void testRandom1000 () {
+        randomHelper(100, 10);
+    }
+
     /**
      * Impliments a data provider that returns the string of the key passed
      */
@@ -286,15 +305,21 @@ public class CacheTest {
         } 
     } 
     
+    /**
+     * Create a cache of a size and request an amount of elements to test access
+     * @param size the size of the cache
+     * @param nameSpaceScalar how much larger the nameSpace should be than the cache
+     */ 
     public void randomHelper (int size, int nameSpaceScalar) {
         // Create provider and cache
         EchoDataProvider provider = new EchoDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, size);
         int nameSpace = size * nameSpaceScalar;
-        // Start a loop to insert n pairs and track progress
+        // Create slow cache to track what keys are stored in the cache 
         ArrayList<Integer> fakeCache = new ArrayList<Integer>();
         Random rand = new Random();
 
+        // Insert an ammount of keys into the cache and track which ones are stored
         for (int i = 0; i <= nameSpace; i++) {
             int key = rand.nextInt(nameSpace);
             cache.get(key);
@@ -309,7 +334,7 @@ public class CacheTest {
                 }
             } 
         }
-        // Read from cache
+        // Read from cache and compare to slow cache
         for (int i = 0; i <= nameSpace; i++) {
             int key = rand.nextInt(nameSpace); 
             provider._wasReferenced = false;
