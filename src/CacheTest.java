@@ -273,7 +273,7 @@ public class CacheTest {
             else {
                 fakeCache.add(0, key);
                 if (fakeCache.size() > size) {
-                    fakeCache.remove(size - 1);
+                    fakeCache.remove(size);
                 }
             } 
         }
@@ -291,7 +291,7 @@ public class CacheTest {
                 assertTrue(provider._wasReferenced);
                 fakeCache.add(0, key);
                 if (fakeCache.size() > size) {
-                    fakeCache.remove(size - 1);
+                    fakeCache.remove(size);
                 }
             }
         }
