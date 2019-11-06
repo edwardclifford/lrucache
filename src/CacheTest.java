@@ -229,10 +229,42 @@ public class CacheTest {
         
     }
 
+    /**
+     *  Tests that the least recently used element is correct 
+     */
     @Test
     public void leastRecentlyUsedIsCorrect () {
-        DataProvider<Integer,String> provider = null; // Need to instantiate an actual DataProvider
-        Cache<Integer,String> cache = new LRUCache<Integer,String>(provider, 5);
+    	TestDataProvider provider = new TestDataProvider();
+        Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 3);
+        //inserts values into the cache
+        cache.get(0);
+        cache.get(1);
+        cache.get(2);
+        
+        //inserts a 4th value, larger than the max amount allowed in the cache
+        //     The last used value (0 in this case) should be the only one that should not be in the cache now
+        cache.get(3);
+        
+        //makes sure 1 is in the cache
+        provider.resetReferenced();
+        cache.get(1);
+        assertFalse(provider.wasReferenced());
+        
+        //makes sure 2 is in the cache
+        provider.resetReferenced();
+        cache.get(2);
+        assertFalse(provider.wasReferenced());
+        
+        //makes sure 3 is in the cache
+        provider.resetReferenced();
+        cache.get(3);
+        assertFalse(provider.wasReferenced());  
+        
+        //0 is not in the cache because it was least recently used, it should have to get 0 from the data provider
+        provider.resetReferenced();
+        cache.get(0);
+        assertTrue(provider.wasReferenced());  
+        
     }
 
     @Test
