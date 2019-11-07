@@ -1,3 +1,8 @@
+/*
+ * Project 2
+ * Marie Tessier and Edward Clifford
+ */
+
 import java.util.HashMap;
 
 /**

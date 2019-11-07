@@ -1,3 +1,8 @@
+/*
+ * Project 2
+ * Marie Tessier and Edward Clifford
+ */
+
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
