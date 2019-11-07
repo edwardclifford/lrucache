@@ -5,14 +5,19 @@ import java.util.HashMap;
  * eviction policy.
  */
 public class LRUCache<T, U> implements Cache<T, U> {
+	//creates the cache as a HashMap that takes a key type T and an object
     private HashMap<T, Element<T, U>> _cache;
+    //creates a DataProvider to be used in the class
     private DataProvider<T, U> _provider;
 
-    // TODO comment these
+    //the first term in the hash table
     private T _head;
+    //the last term in the hash table
     private T _tail;
 
+    //maximum capacity of the cache
     private int _maxCapacity;
+    //counts the number of misses when calling the cache
     private int _missCounter = 0;
 
     /**
@@ -21,9 +26,10 @@ public class LRUCache<T, U> implements Cache<T, U> {
      */
     private class Element<T, U> {
         protected U _value;   			
-        protected T _nextKey;
-        protected T _lastKey;
-
+        protected T _nextKey;    //a pointer to the next value 
+        protected T _lastKey;    //a pointer to the previous value 
+        
+        //initializes the value and keys for Element 
         Element (U value, T nextKey, T lastKey) {
             _value = value;
             _nextKey = nextKey;
@@ -74,12 +80,15 @@ public class LRUCache<T, U> implements Cache<T, U> {
     	if (key.equals(_head)) {
     		if (currentElement._nextKey == null) return;
     		
-    		_head = _cache.get(_head)._nextKey;    //updating head to the next element
-    		_cache.get(_head)._lastKey = null;     //updating the new head point back to null
-    		currentElement._lastKey = _tail;	   //updating new tail
-    		currentElement._nextKey = null; 	   //updating new tail to point to null
-    		_cache.get(_tail)._nextKey = key; 	   //updating old tail
-    		_tail = key;						   //setting new tail
+    		//updating head to the next element and than to previous value pointer to null
+    		_head = _cache.get(_head)._nextKey;   
+    		_cache.get(_head)._lastKey = null;
+    		 //updating new tail and setting its pointer to null
+    		currentElement._lastKey = _tail;	   
+    		currentElement._nextKey = null; 	
+    		//updating the old tail and setting the new tail
+    		_cache.get(_tail)._nextKey = key; 	
+    		_tail = key;						
     		return;
     		
     	}
@@ -116,7 +125,6 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * otherwise
      */
     private void addElement (T key, U value) {
-        // TODO -- implement
         // May need helper methods
         // Should create Element (Will be last value in LL)
         // Add element to end of LL
