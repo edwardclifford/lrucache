@@ -91,16 +91,6 @@ public class CacheTest {
     }
 
     /**
-     * Confirms that the TestDataProvider class returns what is expected.
-     */
-    @Test
-    public void testTestDataProviderWorks() {
-        DataProvider<Integer, String> provider = new TestDataProvider();
-        String testValue = provider.get(0);
-        assertTrue(testValue == "Value for key 0.");
-    }
-    
-    /**
      * Tests a cache of one but calling get zero twice
      */
     @Test
