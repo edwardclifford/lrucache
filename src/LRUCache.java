@@ -125,10 +125,6 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * otherwise
      */
     private void addElement (T key, U value) {
-        // May need helper methods
-        // Should create Element (Will be last value in LL)
-        // Add element to end of LL
-        // Add element to hashmap
     	final Element<T, U> entry = new Element<T, U>(value, null, _tail);
         
         _cache.put(key, entry);
