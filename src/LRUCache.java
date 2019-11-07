@@ -51,17 +51,11 @@ public class LRUCache<T, U> implements Cache<T, U> {
 
         //Search the provider
         if (request == null) {
-        	_missCounter ++;
+        	_missCounter++;
         	U value = (U) _provider.get(key);
 
-            //Provider returns null
-        	if (value == null) return null;
-
-            //Add new value to cache
-        	else {
-        	    addElement(key, value);
-                return value;
-            }
+        	addElement(key, value);
+            return value;
         }
 
         //Value located in cache, update to recently used 

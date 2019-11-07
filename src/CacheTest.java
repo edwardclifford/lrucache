@@ -97,11 +97,17 @@ public class CacheTest {
     public void testCacheSizeOne() {
         TestDataProvider provider = new TestDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 1);
+
+        //Check that provider is referenced in event of a miss
         cache.get(0);
         assertTrue(provider._referenced);
+
+        //Check that provider is not referenced when the key is in the cache
         provider._referenced = false;
         String fromCache = cache.get(0);
         assertFalse(provider._referenced);
+
+        //Returns the correct value from cache
         assertTrue(fromCache == "Value for key 0.");
     }
     
@@ -112,15 +118,18 @@ public class CacheTest {
     public void testMax() {
     	TestDataProvider provider = new TestDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 3);
+
         cache.get(0);
         cache.get(1);
         cache.get(2);
         cache.get(3);
         
+        //LRU will be removed, check that provider is referenced
         provider._referenced = false;
         String fromCache = cache.get(0);
         assertTrue(provider._referenced);
         
+        //Check for value that should not be removed by cache
         provider._referenced = false;
         fromCache = cache.get(3);
         assertFalse(provider._referenced);
@@ -244,6 +253,11 @@ public class CacheTest {
 
         //not in DataProvider
         assertNull(cache.get(7));
+
+        //Check that cache stored null under key 7
+        provider._referenced = false;
+        assertNull(cache.get(7));
+        assertFalse(provider._referenced);
     }
 
     /**
@@ -291,6 +305,7 @@ public class CacheTest {
         KeyDataProvider provider = new KeyDataProvider();
         Cache<Key, String> cache = new LRUCache<Key, String>(provider, 5);
 
+        //Insert values into cache, key0 will be evicted
         Key key0 = new Key(0, "This is key 0.");
         Key key1 = new Key(1, "This is key 1.");
         Key key2 = new Key(2, "This is key 2.");
@@ -305,18 +320,22 @@ public class CacheTest {
         cache.get(key4);
         cache.get(key5);
 
+        //Evicted value
         provider._referenced = false;
         assertTrue("This is key 0." == cache.get(key0));
         assertTrue(provider._referenced);
 
+        //MRU value
         provider._referenced = false;
         assertTrue("This is key 0." == cache.get(key0));
         assertFalse(provider._referenced);
 
+        //LRU value
         provider._referenced = false;
         assertTrue("This is key 2." == cache.get(key2));
         assertFalse(provider._referenced);
 
+        //Middle value
         provider._referenced = false;
         assertTrue("This is key 4." == cache.get(key4));
         assertFalse(provider._referenced);
