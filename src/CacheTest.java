@@ -12,7 +12,6 @@ public class CacheTest {
      * Implements a DataProvider that can be asked for keys of value (0..4).
      */
     public static class TestDataProvider implements DataProvider<Integer, String> {
-
         public boolean _referenced = false;
         public int _timesReferenced = 0;
 
@@ -22,7 +21,7 @@ public class CacheTest {
          * @return a string for the value or null if no value was found
          */
         public String get (Integer key) {
-            _timesReferenced ++;
+            _timesReferenced++;
             _referenced = true;
             switch (key) {
                 case 0:
@@ -38,6 +37,57 @@ public class CacheTest {
             }
             return null;
         }
+    }
+
+    /**
+     * Impliments a data provider that returns the string of the key passed
+     */
+    public class EchoDataProvider implements DataProvider<Integer, String> {
+        public int _timesReferenced = 0;
+        public boolean _referenced = false;
+
+        /**
+         * Returns a value for a given key
+         * @param key any integer
+         * @return the key converted to a string
+         */
+        public String get (Integer key) {
+            _timesReferenced++;
+            _referenced = true;
+            return Integer.toString(key); 
+        } 
+    } 
+
+    /**
+     * Implements a data provider that uses the Key class
+     */
+    public class KeyDataProvider implements DataProvider<Key, String> {
+        public int _timesReferenced = 0;
+        public boolean _referenced = false;
+        
+        /**
+         * Returns a value for the given key
+         * @param key a Key type object
+         * @return the value which is the string component of the key
+         */
+        public String get (Key key) {
+            _timesReferenced++;
+            _referenced = true; 
+            return key._stringComponent;
+        } 
+    }
+
+    /**
+     * Implements the Key class used to test an arbitrary type key.
+     */
+    public class Key {
+        int _intComponent;
+        String _stringComponent;
+
+        Key (int number, String phrase) {
+            _intComponent = number;
+            _stringComponent = phrase; 
+        } 
     }
 
     /**
@@ -242,6 +292,47 @@ public class CacheTest {
         cache.get(0);
         assertTrue(provider._referenced);  
     }
+    
+    /**
+     * Test that a cache can handle consuming a key that is not a primitive type
+     */
+    @Test
+    public void testArbitraryTypeKey () {
+        KeyDataProvider provider = new KeyDataProvider();
+        Cache<Key, String> cache = new LRUCache<Key, String>(provider, 5);
+
+        Key key0 = new Key(0, "This is key 0.");
+        Key key1 = new Key(1, "This is key 1.");
+        Key key2 = new Key(2, "This is key 2.");
+        Key key3 = new Key(3, "This is key 3.");
+        Key key4 = new Key(4, "This is key 4.");
+        Key key5 = new Key(5, "This is key 5.");
+
+        cache.get(key0);
+        cache.get(key1);
+        cache.get(key2);
+        cache.get(key3);
+        cache.get(key4);
+        cache.get(key5);
+
+        provider._referenced = false;
+        assertTrue("This is key 0." == cache.get(key0));
+        assertTrue(provider._referenced);
+
+        provider._referenced = false;
+        assertTrue("This is key 0." == cache.get(key0));
+        assertFalse(provider._referenced);
+
+        provider._referenced = false;
+        assertTrue("This is key 2." == cache.get(key2));
+        assertFalse(provider._referenced);
+
+        provider._referenced = false;
+        assertTrue("This is key 4." == cache.get(key4));
+        assertFalse(provider._referenced);
+
+        assertTrue(cache.getNumMisses() == provider._timesReferenced);
+    }
 
     /**
      * Test a cache with size 25 and getting 100 random values
@@ -284,20 +375,6 @@ public class CacheTest {
     public void testRandomLowAccessRate () {
         randomHelper(1000, 100);
     }
-
-    /**
-     * Impliments a data provider that returns the string of the key passed
-     */
-    public class EchoDataProvider implements DataProvider<Integer, String> {
-        public int _timesReferenced = 0;
-        public boolean _referenced = false;
-
-        public String get (Integer key) {
-            _timesReferenced ++;
-            _referenced = true;
-            return Integer.toString(key); 
-        } 
-    } 
     
     /**
      * Create a cache of a size and request an amount of elements to test access: 
@@ -314,6 +391,7 @@ public class CacheTest {
 
         // Create slow cache to track what keys are stored in the cache 
         ArrayList<Integer> fakeCache = new ArrayList<Integer>();
+        int fakeCacheMisses = 0;
         Random rand = new Random();
 
         // Insert an ammount of keys into the cache and track which ones are stored
@@ -325,6 +403,7 @@ public class CacheTest {
                 fakeCache.add(0, key);
             }
             else {
+                fakeCacheMisses++;
                 fakeCache.add(0, key);
                 if (fakeCache.size() > size) {
                     fakeCache.remove(size);
@@ -345,6 +424,7 @@ public class CacheTest {
             }
             else {
                 // In event of a miss, provider should be called, add to fake cache
+                fakeCacheMisses++;
                 assertTrue(provider._referenced);
                 fakeCache.add(0, key);
                 if (fakeCache.size() > size) {
@@ -353,6 +433,7 @@ public class CacheTest {
             }
         }
         // Check that the cache misses are equal to the times the provider was called
-        assertTrue(cache.getNumMisses() == provider._timesReferenced);
+        assertTrue(cache.getNumMisses() == provider._timesReferenced && 
+                   cache.getNumMisses() == fakeCacheMisses);
     }
 }
