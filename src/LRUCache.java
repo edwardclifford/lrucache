@@ -8,6 +8,7 @@ public class LRUCache<T, U> implements Cache<T, U> {
     private HashMap<T, Element<T, U>> _cache;
     private DataProvider<T, U> _provider;
 
+    // TODO comment these
     private T _head;
     private T _tail;
 
@@ -97,7 +98,6 @@ public class LRUCache<T, U> implements Cache<T, U> {
 
     		//Remove the element from the linked list, set neighbor elements to point to each other
     		_cache.get(currentElement._lastKey)._nextKey = currentElement._nextKey;
-
     		_cache.get(currentElement._nextKey)._lastKey = currentElement._lastKey;
     		
     		//Move the element to the end of the linked list

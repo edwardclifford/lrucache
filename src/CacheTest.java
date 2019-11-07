@@ -219,7 +219,7 @@ public class CacheTest {
         cache.get(2);
         
         //inserts a 4th value, larger than the max amount allowed in the cache
-        //     The last used value (0 in this case) should be the only one that should not be in the cache now
+        //     the last used value (0 in this case) should be the only one that should not be in the cache now
         cache.get(3);
         
         //makes sure 1 is in the cache
