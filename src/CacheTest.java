@@ -13,8 +13,8 @@ public class CacheTest {
      */
     public static class TestDataProvider implements DataProvider<Integer, String> {
 
-        private boolean _referenced = false;
-        public int timesReferenced = 0;
+        public boolean _referenced = false;
+        public int _timesReferenced = 0;
 
         /**
          * Returns a string for a given integer key
@@ -22,7 +22,7 @@ public class CacheTest {
          * @return a string for the value or null if no value was found
          */
         public String get (Integer key) {
-            timesReferenced ++;
+            _timesReferenced ++;
             _referenced = true;
             switch (key) {
                 case 0:
@@ -37,21 +37,6 @@ public class CacheTest {
                     return "Value for key 4.";
             }
             return null;
-        }
-
-        /**
-         * Allows the referenced flag to be reset
-         */
-        public void resetReferenced () {
-            _referenced = false;
-        }
-
-        /**
-         * Checks if the TestDataProvider was used by the cache.
-         * @return true if referenced, false otherwise.
-         */
-        public boolean wasReferenced () {
-            return _referenced;
         }
     }
 
@@ -73,10 +58,10 @@ public class CacheTest {
         TestDataProvider provider = new TestDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 1);
         cache.get(0);
-        assertTrue(provider.wasReferenced());
-        provider.resetReferenced();
+        assertTrue(provider._referenced);
+        provider._referenced = false;
         String fromCache = cache.get(0);
-        assertFalse(provider.wasReferenced());
+        assertFalse(provider._referenced);
         assertTrue(fromCache == "Value for key 0.");
     }
     
@@ -92,15 +77,14 @@ public class CacheTest {
         cache.get(2);
         cache.get(3);
         
-        provider.resetReferenced();
+        provider._referenced = false;
         String fromCache = cache.get(0);
-        assertTrue(provider.wasReferenced());
+        assertTrue(provider._referenced);
         
-        provider.resetReferenced();
+        provider._referenced = false;
         fromCache = cache.get(3);
-        assertFalse(provider.wasReferenced());
+        assertFalse(provider._referenced);
         assertTrue(fromCache == "Value for key 3.");       
-        
     }
     
     /**
@@ -139,21 +123,20 @@ public class CacheTest {
     	TestDataProvider provider = new TestDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, 3);
         cache.get(0);
-        assertTrue(provider.wasReferenced());
-        provider.resetReferenced();
+        assertTrue(provider._referenced);
+        provider._referenced = false;
         
         cache.get(1);
-        assertTrue(provider.wasReferenced());
-        provider.resetReferenced();
+        assertTrue(provider._referenced);
+        provider._referenced = false;
         
         cache.get(2);
-        assertTrue(provider.wasReferenced());
-        provider.resetReferenced();
+        assertTrue(provider._referenced);
+        provider._referenced = false;
         
         //tests that 1 is already in the cache
         cache.get(1);
-        assertFalse(provider.wasReferenced());
-        
+        assertFalse(provider._referenced);
     }
     
     /**
@@ -167,12 +150,10 @@ public class CacheTest {
         cache.get(1);
         cache.get(2);
                 
-        provider.resetReferenced();
+        provider._referenced = false;
         String fromCache = cache.get(0);
-        assertFalse(provider.wasReferenced());
+        assertFalse(provider._referenced);
         assertTrue(fromCache == "Value for key 0.");     
-             
-        
     }
     
     /**
@@ -187,13 +168,11 @@ public class CacheTest {
         cache.get(2);
         cache.get(3);
         
-        provider.resetReferenced();
+        provider._referenced = false;
         String fromCache = cache.get(2);
-        assertFalse(provider.wasReferenced());
+        assertFalse(provider._referenced);
         assertTrue(fromCache == "Value for key 2.");       
-        
     }
-    
     
     /**
      * Tests trying to reference an element in the end of the cache
@@ -207,11 +186,10 @@ public class CacheTest {
         cache.get(2);
         cache.get(3);
         
-        provider.resetReferenced();
+        provider._referenced = false;
         String fromCache = cache.get(3);
-        assertFalse(provider.wasReferenced());
+        assertFalse(provider._referenced);
         assertTrue(fromCache == "Value for key 3.");       
-        
     }
     
     /**
@@ -226,7 +204,6 @@ public class CacheTest {
 
         //not in DataProvider
         assertNull(cache.get(7));
-        
     }
 
     /**
@@ -246,29 +223,28 @@ public class CacheTest {
         cache.get(3);
         
         //makes sure 1 is in the cache
-        provider.resetReferenced();
+        provider._referenced = false;
         cache.get(1);
-        assertFalse(provider.wasReferenced());
+        assertFalse(provider._referenced);
         
         //makes sure 2 is in the cache
-        provider.resetReferenced();
+        provider._referenced = false;
         cache.get(2);
-        assertFalse(provider.wasReferenced());
+        assertFalse(provider._referenced);
         
         //makes sure 3 is in the cache
-        provider.resetReferenced();
+        provider._referenced = false;
         cache.get(3);
-        assertFalse(provider.wasReferenced());  
+        assertFalse(provider._referenced);  
         
         //0 is not in the cache because it was least recently used, it should have to get 0 from the data provider
-        provider.resetReferenced();
+        provider._referenced = false;
         cache.get(0);
-        assertTrue(provider.wasReferenced());  
-        
+        assertTrue(provider._referenced);  
     }
 
     /**
-     * Test a cache with size 100 and getting 200 possible values
+     * Test a cache with size 25 and getting 100 random values
      */
     @Test
     public void testRandom100 () {
@@ -276,7 +252,7 @@ public class CacheTest {
     } 
 
     /**
-     * Test a cache with size 100 and getting 200 possible values
+     * Test a cache with size 100 and getting 200 random values
      */
     @Test
     public void testRandom200 () {
@@ -284,7 +260,7 @@ public class CacheTest {
     }
 
     /**
-     * Test a cache with size 100 and getting 1000 possible values
+     * Test a cache with size 100 and getting 1000 random values
      */
     @Test
     public void testRandom1000 () {
@@ -292,21 +268,41 @@ public class CacheTest {
     }
 
     /**
+     * Test a cache with size 1000 and getting 1000 random values
+     * Will be getting hits most of the time
+     */
+    @Test
+    public void testRandomHighAccessRate () {
+        randomHelper(1000, 1);
+    }
+
+    /**
+     * Test a cache with size 1000 and getting 100000 random values
+     * Will be getting misses most of the time
+     */
+    @Test
+    public void testRandomLowAccessRate () {
+        randomHelper(1000, 100);
+    }
+
+    /**
      * Impliments a data provider that returns the string of the key passed
      */
     public class EchoDataProvider implements DataProvider<Integer, String> {
         public int _timesReferenced = 0;
-        public boolean _wasReferenced = false;
+        public boolean _referenced = false;
 
         public String get (Integer key) {
             _timesReferenced ++;
-            _wasReferenced = true;
+            _referenced = true;
             return Integer.toString(key); 
         } 
     } 
     
     /**
-     * Create a cache of a size and request an amount of elements to test access
+     * Create a cache of a size and request an amount of elements to test access: 
+     * The purpose of this helper is to emulate a cache that is LRU, but is not complex and
+     * only has the time complexity of O(n).
      * @param size the size of the cache
      * @param nameSpaceScalar how much larger the nameSpace should be than the cache
      */ 
@@ -315,6 +311,7 @@ public class CacheTest {
         EchoDataProvider provider = new EchoDataProvider();
         Cache<Integer, String> cache = new LRUCache<Integer, String>(provider, size);
         int nameSpace = size * nameSpaceScalar;
+
         // Create slow cache to track what keys are stored in the cache 
         ArrayList<Integer> fakeCache = new ArrayList<Integer>();
         Random rand = new Random();
@@ -334,23 +331,28 @@ public class CacheTest {
                 }
             } 
         }
+
         // Read from cache and compare to slow cache
         for (int i = 0; i <= nameSpace; i++) {
             int key = rand.nextInt(nameSpace); 
-            provider._wasReferenced = false;
+            provider._referenced = false;
             cache.get(key);
             if (fakeCache.contains(key)) {
-                assertFalse(provider._wasReferenced);
+                // In event of a hit, provider should not be called, update fake cache
+                assertFalse(provider._referenced);
                 fakeCache.remove(fakeCache.indexOf(key));
                 fakeCache.add(0, key);
             }
             else {
-                assertTrue(provider._wasReferenced);
+                // In event of a miss, provider should be called, add to fake cache
+                assertTrue(provider._referenced);
                 fakeCache.add(0, key);
                 if (fakeCache.size() > size) {
                     fakeCache.remove(size);
                 }
             }
         }
+        // Check that the cache misses are equal to the times the provider was called
+        assertTrue(cache.getNumMisses() == provider._timesReferenced);
     }
 }
