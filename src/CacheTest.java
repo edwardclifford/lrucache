@@ -93,6 +93,24 @@ public class CacheTest {
             _intComponent = number;
             _stringComponent = phrase; 
         } 
+        
+        @Override
+        public boolean equals (Object o) {
+            final Key other = (Key) o;
+            return _intComponent == other._intComponent && _stringComponent == other._stringComponent;
+        }
+
+        @Override
+        public int hashCode () {
+            int hash = 0;
+            String combinedString = "" + _intComponent + _stringComponent;
+            int digits = combinedString.length(); 
+            String hashString = "";
+            for (int i = 0; i < digits; i++) {
+                hashString += (int) combinedString.charAt(i);
+            }
+            return hashString.hashCode();
+        }
     }
 
     /**
@@ -449,5 +467,16 @@ public class CacheTest {
         // Check that the cache misses are equal to the times the provider was called
         assertTrue(cache.getNumMisses() == provider._timesReferenced && 
                    cache.getNumMisses() == fakeCacheMisses);
+    }
+    
+    @Test
+    public void checkComparison () {
+        Key key1 = new Key(1, "string1");
+        Key key1Clone = new Key(1, "string1");
+        Key key2 = new Key(2, "string2");
+
+        assertTrue(key1.equals(key1Clone));
+        assertFalse(key1 == key1Clone);
+        assertFalse(key1.equals(key2));
     }
 }
