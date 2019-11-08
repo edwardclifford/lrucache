@@ -468,15 +468,4 @@ public class CacheTest {
         assertTrue(cache.getNumMisses() == provider._timesReferenced && 
                    cache.getNumMisses() == fakeCacheMisses);
     }
-    
-    @Test
-    public void checkComparison () {
-        Key key1 = new Key(1, "string1");
-        Key key1Clone = new Key(1, "string1");
-        Key key2 = new Key(2, "string2");
-
-        assertTrue(key1.equals(key1Clone));
-        assertFalse(key1 == key1Clone);
-        assertFalse(key1.equals(key2));
-    }
 }
